@@ -20,7 +20,7 @@ private:
 
     // Private constructor & destructor
     Database(const std::string& dbName, const std::string& user, const std::string& pass);
-    ~Database();
+    
 
 public:
     // Copy/Move operations throw runtime_error
@@ -28,7 +28,7 @@ public:
     Database& operator=(const Database&);
     Database(Database&&) noexcept(false);
     Database& operator=(Database&&) noexcept(false);
-
+    ~Database();
     static Database* getInstance(const std::string& dbName, const std::string& user, const std::string& pass);
 
     void connect();
