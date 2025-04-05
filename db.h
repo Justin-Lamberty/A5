@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <iostream>
+#include <ctime>
 
 class Database {
 private:
@@ -14,22 +15,29 @@ private:
 
     static Database* instance;
 
-    // Private constructor
-    Database(const std::string& dbName, const std::string& user, const std::string& pass);
+    time_t last_activity;
+    static const int TIMEOUT{5};
 
-    // Private destructor
+    // Private constructor & destructor
+    Database(const std::string& dbName, const std::string& user, const std::string& pass);
     ~Database();
 
 public:
-    // Delete copy constructor and assignment to prevent copying
-    Database(const Database&) = delete;
-    Database& operator=(const Database&) = delete;
+    // Copy/Move operations throw runtime_error
+    Database(const Database&);
+    Database& operator=(const Database&);
+    Database(Database&&) noexcept(false);
+    Database& operator=(Database&&) noexcept(false);
 
     static Database* getInstance(const std::string& dbName, const std::string& user, const std::string& pass);
 
     void connect();
     void disconnect();
     bool isConnected() const;
+
+    // Timeout functionality
+    bool isTimeout();
+    void refreshConnection();
 
     // Overload new and delete
     void* operator new(size_t size);
@@ -42,9 +50,7 @@ public:
     void set_password(const std::string& pass);
     std::string get_password() const;
 
-    // Reset the instance
     static void resetInstance();
 };
 
 #endif // DB_H
-
